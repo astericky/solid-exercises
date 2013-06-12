@@ -38,7 +38,7 @@ public class ApplyToJobWorkflow
                     boolean isNewResume,
                     boolean makeResumeActive) throws ProfileCompletionRequiredException, JobDoesNotExistException
   {
-    if (job == null)
+    if (job.doesntExist())
     {
       throw new JobDoesNotExistException();
     }

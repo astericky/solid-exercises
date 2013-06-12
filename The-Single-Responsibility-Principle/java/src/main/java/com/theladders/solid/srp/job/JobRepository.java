@@ -6,19 +6,19 @@ import java.util.Map;
 
 public class JobRepository
 {
-  private final Map<Integer, Job> jobs;
+  private final Map<Integer, SomeJob> jobs;
 
   public JobRepository()
   {
     this.jobs = new HashMap<>();
   }
 
-  public void addJob(Job aJob)
+  public void addJob(SomeJob aJob)
   {
     jobs.put(aJob.getJobId(), aJob);
   }
 
-  public Job getJob(int jobId)
+  public SomeJob getJob(int jobId)
   {
     return jobs.get(jobId);
   }

@@ -10,7 +10,7 @@ import org.junit.*;
 import com.theladders.solid.srp.http.HttpRequest;
 import com.theladders.solid.srp.http.HttpResponse;
 import com.theladders.solid.srp.http.HttpSession;
-import com.theladders.solid.srp.job.Job;
+import com.theladders.solid.srp.job.SomeJob;
 import com.theladders.solid.srp.job.JobRepository;
 import com.theladders.solid.srp.job.JobSearchService;
 import com.theladders.solid.srp.job.application.JobApplicationRepository;
@@ -252,7 +252,7 @@ public class TestIt
   {
     if (jobId != INVALID_JOB_ID)
     {
-      jobRepository.addJob(new Job(jobId));
+      jobRepository.addJob(new SomeJob(jobId));
     }
   }
 
@@ -278,7 +278,7 @@ public class TestIt
   private void addToJobApplicationRepository()
   {
     Jobseeker JOBSEEKER = new Jobseeker(APPROVED_JOBSEEKER, true);
-    Job job = new Job(15);
+    SomeJob job = new SomeJob(15);
     Resume resume = new Resume("foo");
 
     existingApplication = new SuccessfulApplication(JOBSEEKER, job, resume);

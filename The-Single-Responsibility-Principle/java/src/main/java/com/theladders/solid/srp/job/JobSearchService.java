@@ -12,6 +12,9 @@ public class JobSearchService
 
   public Job getJob(int jobId)
   {
-    return repository.getJob(jobId);
+    SomeJob job = repository.getJob(jobId);
+    
+    if (job == null) return new NoJob();
+    return job;
   }
 }

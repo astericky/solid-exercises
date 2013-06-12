@@ -49,7 +49,9 @@ public class ApplyController
     Job job = jobSearchService.getJob(jobId);
 
     Map<String, Object> model = new HashMap<>();
-
+    model.put("jobId", job.getJobId());
+    model.put("jobTitle", job.getTitle());
+    
     List<String> errList = new ArrayList<>();
     
     try
@@ -65,9 +67,6 @@ public class ApplyController
     }
     catch (ProfileCompletionRequiredException e)
     {
-      model.put("jobId", job.getJobId());
-      model.put("jobTitle", job.getTitle());
-      
       provideResumeCompletionView(response, model);
       return response;      
     }
@@ -78,16 +77,10 @@ public class ApplyController
     }
     catch (Exception e)
     {
-      model.put("jobId", job.getJobId());
-      model.put("jobTitle", job.getTitle());
-      
       errList.add("We could not process your application.");
       provideErrorView(response, errList, model);
       return response;
     }
-
-    model.put("jobId", job.getJobId());
-    model.put("jobTitle", job.getTitle());
     
     provideApplySuccessView(response, model);
 
