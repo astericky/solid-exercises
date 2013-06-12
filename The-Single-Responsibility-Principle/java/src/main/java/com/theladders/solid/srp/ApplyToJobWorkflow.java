@@ -36,8 +36,13 @@ public class ApplyToJobWorkflow
                     Job job,
                     String fileName,
                     boolean isNewResume,
-                    boolean makeResumeActive) throws ProfileCompletionRequiredException
+                    boolean makeResumeActive) throws ProfileCompletionRequiredException, JobDoesNotExistException
   {
+    if (job == null)
+    {
+      throw new JobDoesNotExistException();
+    }
+
     JobseekerProfile profile = jobseekerProfileManager.getJobSeekerProfile(jobseeker);
     Resume resume;
 

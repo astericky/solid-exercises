@@ -48,18 +48,9 @@ public class ApplyController
 
     Job job = jobSearchService.getJob(jobId);
 
-    if (job == null)
-    {
-      provideInvalidJobView(response, jobId);
-      return response;
-    }
-
     Map<String, Object> model = new HashMap<>();
 
     List<String> errList = new ArrayList<>();
-
-    model.put("jobId", job.getJobId());
-    model.put("jobTitle", job.getTitle());
     
     try
     {
@@ -74,17 +65,30 @@ public class ApplyController
     }
     catch (ProfileCompletionRequiredException e)
     {
+      model.put("jobId", job.getJobId());
+      model.put("jobTitle", job.getTitle());
       
       provideResumeCompletionView(response, model);
       return response;      
     }
+    catch (JobDoesNotExistException e)
+    {
+      provideInvalidJobView(response, jobId);
+      return response;     
+    }
     catch (Exception e)
     {
+      model.put("jobId", job.getJobId());
+      model.put("jobTitle", job.getTitle());
+      
       errList.add("We could not process your application.");
       provideErrorView(response, errList, model);
       return response;
     }
 
+    model.put("jobId", job.getJobId());
+    model.put("jobTitle", job.getTitle());
+    
     provideApplySuccessView(response, model);
 
     return response;
