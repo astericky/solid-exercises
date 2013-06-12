@@ -47,7 +47,6 @@ public class ApplyController
                              String origFileName)
   {
     Jobseeker jobseeker = request.getSession().getJobseeker();
-    JobseekerProfile profile = jobseekerProfileManager.getJobSeekerProfile(jobseeker);
 
     int jobId = getJobIdFromRequest(request);
 
@@ -63,23 +62,23 @@ public class ApplyController
 
     List<String> errList = new ArrayList<>();
 
+    model.put("jobId", job.getJobId());
+    model.put("jobTitle", job.getTitle());
+    
     try
     {
       apply(request, jobseeker, job, origFileName);
+    }
+    catch (ProfileCompletionRequiredException e)
+    {
+      
+      provideResumeCompletionView(response, model);
+      return response;      
     }
     catch (Exception e)
     {
       errList.add("We could not process your application.");
       provideErrorView(response, errList, model);
-      return response;
-    }
-
-    model.put("jobId", job.getJobId());
-    model.put("jobTitle", job.getTitle());
-
-    if (profileCompletionRequired(jobseeker, profile))
-    {
-      provideResumeCompletionView(response, model);
       return response;
     }
 
@@ -124,8 +123,9 @@ public class ApplyController
   private void apply(HttpRequest request,
                      Jobseeker jobseeker,
                      Job job,
-                     String fileName)
+                     String fileName) throws ProfileCompletionRequiredException
   {
+    JobseekerProfile profile = jobseekerProfileManager.getJobSeekerProfile(jobseeker);
     Resume resume = saveNewOrRetrieveExistingResume(fileName,jobseeker, request);
     UnprocessedApplication application = new UnprocessedApplication(jobseeker, job, resume);
     JobApplicationResult applicationResult = jobApplicationSystem.apply(application);
@@ -133,6 +133,11 @@ public class ApplyController
     if (applicationResult.failure())
     {
       throw new ApplicationFailureException(applicationResult.toString());
+    }
+    
+    if(profileCompletionRequired(jobseeker, profile))
+    {
+      throw new ProfileCompletionRequiredException();
     }
   }
 
