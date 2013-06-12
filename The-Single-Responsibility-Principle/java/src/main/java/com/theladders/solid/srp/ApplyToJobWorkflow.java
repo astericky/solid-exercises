@@ -9,7 +9,6 @@ import com.theladders.solid.srp.jobseeker.Jobseeker;
 import com.theladders.solid.srp.jobseeker.JobseekerProfile;
 import com.theladders.solid.srp.jobseeker.JobseekerProfileManager;
 import com.theladders.solid.srp.jobseeker.ProfileStatus;
-import com.theladders.solid.srp.resume.MyResumeManager;
 import com.theladders.solid.srp.resume.Resume;
 import com.theladders.solid.srp.resume.ResumeManager;
 
@@ -17,18 +16,15 @@ public class ApplyToJobWorkflow
 {
   private final JobApplicationSystem    jobApplicationSystem;
   private final ResumeManager           resumeManager;
-  private final MyResumeManager         myResumeManager;
   private final JobseekerProfileManager jobseekerProfileManager;
 
   
   public ApplyToJobWorkflow(JobApplicationSystem jobApplicationSystem,
                             ResumeManager resumeManager,
-                            MyResumeManager myResumeManager,
                             JobseekerProfileManager jobseekerProfileManager)
   {
     this.jobApplicationSystem = jobApplicationSystem;
     this.resumeManager = resumeManager;
-    this.myResumeManager = myResumeManager;
     this.jobseekerProfileManager = jobseekerProfileManager;
   }
 
@@ -73,12 +69,12 @@ public class ApplyToJobWorkflow
 
       if (resume != null && makeResumeActive)
       {
-        myResumeManager.saveAsActive(jobseeker, resume);
+        resumeManager.saveAsActive(jobseeker, resume);
       }
     }
     else
     {
-      resume = myResumeManager.getActiveResume(jobseeker.getId());
+      resume = resumeManager.getActiveResume(jobseeker.getId());
     }
     
     return resume;

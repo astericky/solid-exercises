@@ -12,7 +12,6 @@ import com.theladders.solid.srp.job.JobSearchService;
 import com.theladders.solid.srp.job.application.JobApplicationSystem;
 import com.theladders.solid.srp.jobseeker.JobseekerProfileManager;
 import com.theladders.solid.srp.jobseeker.Jobseeker;
-import com.theladders.solid.srp.resume.MyResumeManager;
 import com.theladders.solid.srp.resume.ResumeManager;
 
 public class ApplyController
@@ -20,20 +19,17 @@ public class ApplyController
   private final JobSearchService        jobSearchService;
   private final JobApplicationSystem    jobApplicationSystem;
   private final ResumeManager           resumeManager;
-  private final MyResumeManager         myResumeManager;
   private final JobseekerProfileManager jobseekerProfileManager;
 
 
   public ApplyController(JobSearchService jobSearchService,
                          JobApplicationSystem jobApplicationSystem,
                          ResumeManager resumeManager,
-                         MyResumeManager myResumeManager,
                          JobseekerProfileManager jobseekerProfileManager)
   {
     this.jobSearchService = jobSearchService;
     this.jobApplicationSystem = jobApplicationSystem;
     this.resumeManager = resumeManager;
-    this.myResumeManager = myResumeManager;
     this.jobseekerProfileManager = jobseekerProfileManager;
   }
 
@@ -61,7 +57,6 @@ public class ApplyController
       
       ApplyToJobWorkflow workflow = new ApplyToJobWorkflow(jobApplicationSystem, 
                                                            resumeManager, 
-                                                           myResumeManager, 
                                                            jobseekerProfileManager);
       workflow.apply(jobseeker, job, origFileName, isNewResume, makeResumeActive);
     }
