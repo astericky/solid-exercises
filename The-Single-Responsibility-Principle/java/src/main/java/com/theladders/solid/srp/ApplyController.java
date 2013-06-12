@@ -90,7 +90,6 @@ public class ApplyController
     return response;
   }
 
-
   private int getJobIdFromRequest(HttpRequest request)
   {
     String jobIdString = request.getParameter("jobId");
@@ -115,8 +114,6 @@ public class ApplyController
    Result result = new Result("error", model, errList);
    response.setResult(result);
   }
-
-
 
   private static void provideInvalidJobView(HttpResponse response, int jobId)
   {
