@@ -9,38 +9,34 @@ import com.theladders.solid.srp.http.HttpRequest;
 import com.theladders.solid.srp.http.HttpResponse;
 import com.theladders.solid.srp.job.Job;
 import com.theladders.solid.srp.job.JobSearchService;
-import com.theladders.solid.srp.job.application.ApplicationFailureException;
-import com.theladders.solid.srp.job.application.JobApplicationResult;
 import com.theladders.solid.srp.job.application.JobApplicationSystem;
-import com.theladders.solid.srp.job.application.UnprocessedApplication;
-import com.theladders.solid.srp.jobseeker.JobseekerProfile;
 import com.theladders.solid.srp.jobseeker.JobseekerProfileManager;
-import com.theladders.solid.srp.jobseeker.ProfileStatus;
 import com.theladders.solid.srp.jobseeker.Jobseeker;
 import com.theladders.solid.srp.resume.MyResumeManager;
-import com.theladders.solid.srp.resume.Resume;
 import com.theladders.solid.srp.resume.ResumeManager;
 
 public class ApplyController
 {
-  private final JobseekerProfileManager jobseekerProfileManager;
   private final JobSearchService        jobSearchService;
   private final JobApplicationSystem    jobApplicationSystem;
   private final ResumeManager           resumeManager;
   private final MyResumeManager         myResumeManager;
+  private final JobseekerProfileManager jobseekerProfileManager;
 
-  public ApplyController(JobseekerProfileManager jobseekerProfileManager,
-                         JobSearchService jobSearchService,
+
+  public ApplyController(JobSearchService jobSearchService,
                          JobApplicationSystem jobApplicationSystem,
                          ResumeManager resumeManager,
-                         MyResumeManager myResumeManager)
+                         MyResumeManager myResumeManager,
+                         JobseekerProfileManager jobseekerProfileManager)
   {
-    this.jobseekerProfileManager = jobseekerProfileManager;
     this.jobSearchService = jobSearchService;
     this.jobApplicationSystem = jobApplicationSystem;
     this.resumeManager = resumeManager;
     this.myResumeManager = myResumeManager;
+    this.jobseekerProfileManager = jobseekerProfileManager;
   }
+
 
   public HttpResponse handle(HttpRequest request,
                              HttpResponse response,
@@ -70,7 +66,11 @@ public class ApplyController
       boolean isNewResume = !"existing".equals(request.getParameter("whichResume"));
       boolean makeResumeActive = "yes".equals(request.getParameter("makeResumeActive"));
       
-      apply(jobseeker, job, origFileName, isNewResume, makeResumeActive);
+      ApplyToJobWorkflow workflow = new ApplyToJobWorkflow(jobApplicationSystem, 
+                                                           resumeManager, 
+                                                           myResumeManager, 
+                                                           jobseekerProfileManager);
+      workflow.apply(jobseeker, job, origFileName, isNewResume, makeResumeActive);
     }
     catch (ProfileCompletionRequiredException e)
     {
@@ -90,13 +90,6 @@ public class ApplyController
     return response;
   }
 
-  private boolean profileCompletionRequired(Jobseeker jobseeker,
-                                            JobseekerProfile profile)
-  {
-    return !jobseeker.isPremium() && (profile.getStatus().equals(ProfileStatus.INCOMPLETE) ||
-                                   profile.getStatus().equals(ProfileStatus.NO_PROFILE) ||
-                                   profile.getStatus().equals(ProfileStatus.REMOVED));
-  }
 
   private int getJobIdFromRequest(HttpRequest request)
   {
@@ -123,43 +116,7 @@ public class ApplyController
    response.setResult(result);
   }
 
-  private void apply(Jobseeker jobseeker,
-                     Job job,
-                     String fileName,
-                     boolean isNewResume,
-                     boolean makeResumeActive) throws ProfileCompletionRequiredException
-  {
-    JobseekerProfile profile = jobseekerProfileManager.getJobSeekerProfile(jobseeker);
-    Resume resume;
 
-    if (isNewResume)
-    {
-      resume = resumeManager.saveResume(jobseeker, fileName);
-
-      if (resume != null && makeResumeActive)
-      {
-        myResumeManager.saveAsActive(jobseeker, resume);
-      }
-    }
-    else
-    {
-      resume = myResumeManager.getActiveResume(jobseeker.getId());
-    }
-
-    
-    UnprocessedApplication application = new UnprocessedApplication(jobseeker, job, resume);
-    JobApplicationResult applicationResult = jobApplicationSystem.apply(application);
-
-    if (applicationResult.failure())
-    {
-      throw new ApplicationFailureException(applicationResult.toString());
-    }
-    
-    if(profileCompletionRequired(jobseeker, profile))
-    {
-      throw new ProfileCompletionRequiredException();
-    }
-  }
 
   private static void provideInvalidJobView(HttpResponse response, int jobId)
   {
