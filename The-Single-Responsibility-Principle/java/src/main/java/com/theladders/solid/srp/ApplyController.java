@@ -49,8 +49,7 @@ public class ApplyController
     Jobseeker jobseeker = request.getSession().getJobseeker();
     JobseekerProfile profile = jobseekerProfileManager.getJobSeekerProfile(jobseeker);
 
-    String jobIdString = request.getParameter("jobId");
-    int jobId = Integer.parseInt(jobIdString);
+    int jobId = getJobIdFromRequest(request);
 
     Job job = jobSearchService.getJob(jobId);
 
@@ -89,6 +88,13 @@ public class ApplyController
     provideApplySuccessView(response, model);
 
     return response;
+  }
+
+  private int getJobIdFromRequest(HttpRequest request)
+  {
+    String jobIdString = request.getParameter("jobId");
+    int jobId = Integer.parseInt(jobIdString);
+    return jobId;
   }
 
   private static void provideApplySuccessView(HttpResponse response, Map<String, Object> model)
