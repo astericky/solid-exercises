@@ -44,21 +44,7 @@ public class ApplyToJobWorkflow
     }
 
     JobseekerProfile profile = jobseekerProfileManager.getJobSeekerProfile(jobseeker);
-    Resume resume;
-
-    if (isNewResume)
-    {
-      resume = resumeManager.saveResume(jobseeker, fileName);
-
-      if (resume != null && makeResumeActive)
-      {
-        myResumeManager.saveAsActive(jobseeker, resume);
-      }
-    }
-    else
-    {
-      resume = myResumeManager.getActiveResume(jobseeker.getId());
-    }
+    Resume resume = getJobseekerResume(jobseeker, fileName, isNewResume, makeResumeActive);
 
     UnprocessedApplication application = new UnprocessedApplication(jobseeker, job, resume);
     JobApplicationResult applicationResult = jobApplicationSystem.apply(application);
@@ -73,7 +59,30 @@ public class ApplyToJobWorkflow
       throw new ProfileCompletionRequiredException();
     }
   }
-  
+
+  private Resume getJobseekerResume(Jobseeker jobseeker,
+                                    String fileName,
+                                    boolean isNewResume,
+                                    boolean makeResumeActive)
+  {
+    Resume resume;
+    
+    if (isNewResume)
+    {
+      resume = resumeManager.saveResume(jobseeker, fileName);
+
+      if (resume != null && makeResumeActive)
+      {
+        myResumeManager.saveAsActive(jobseeker, resume);
+      }
+    }
+    else
+    {
+      resume = myResumeManager.getActiveResume(jobseeker.getId());
+    }
+    
+    return resume;
+  }
 
  private boolean profileCompletionRequired(Jobseeker jobseeker,
                                             JobseekerProfile profile)
