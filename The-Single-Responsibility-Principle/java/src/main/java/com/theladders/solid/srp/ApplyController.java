@@ -67,7 +67,10 @@ public class ApplyController
     
     try
     {
-      apply(request, jobseeker, job, origFileName);
+      boolean isNewResume = !"existing".equals(request.getParameter("whichResume"));
+      boolean makeResumeActive = "yes".equals(request.getParameter("makeResumeActive"));
+      
+      apply(jobseeker, job, origFileName, isNewResume, makeResumeActive);
     }
     catch (ProfileCompletionRequiredException e)
     {
@@ -120,13 +123,30 @@ public class ApplyController
    response.setResult(result);
   }
 
-  private void apply(HttpRequest request,
-                     Jobseeker jobseeker,
+  private void apply(Jobseeker jobseeker,
                      Job job,
-                     String fileName) throws ProfileCompletionRequiredException
+                     String fileName,
+                     boolean isNewResume,
+                     boolean makeResumeActive) throws ProfileCompletionRequiredException
   {
     JobseekerProfile profile = jobseekerProfileManager.getJobSeekerProfile(jobseeker);
-    Resume resume = saveNewOrRetrieveExistingResume(fileName,jobseeker, request);
+    Resume resume;
+
+    if (isNewResume)
+    {
+      resume = resumeManager.saveResume(jobseeker, fileName);
+
+      if (resume != null && makeResumeActive)
+      {
+        myResumeManager.saveAsActive(jobseeker, resume);
+      }
+    }
+    else
+    {
+      resume = myResumeManager.getActiveResume(jobseeker.getId());
+    }
+
+    
     UnprocessedApplication application = new UnprocessedApplication(jobseeker, job, resume);
     JobApplicationResult applicationResult = jobApplicationSystem.apply(application);
 
@@ -139,29 +159,6 @@ public class ApplyController
     {
       throw new ProfileCompletionRequiredException();
     }
-  }
-
-  private Resume saveNewOrRetrieveExistingResume(String newResumeFileName,
-                                                 Jobseeker jobseeker,
-                                                 HttpRequest request)
-  {
-    Resume resume;
-
-    if (!"existing".equals(request.getParameter("whichResume")))
-    {
-      resume = resumeManager.saveResume(jobseeker, newResumeFileName);
-
-      if (resume != null && "yes".equals(request.getParameter("makeResumeActive")))
-      {
-        myResumeManager.saveAsActive(jobseeker, resume);
-      }
-    }
-    else
-    {
-      resume = myResumeManager.getActiveResume(jobseeker.getId());
-    }
-
-    return resume;
   }
 
   private static void provideInvalidJobView(HttpResponse response, int jobId)
