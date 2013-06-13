@@ -30,9 +30,7 @@ public class ApplyToJobWorkflow
 
   public void apply(Jobseeker jobseeker,
                     Job job,
-                    String fileName,
-                    boolean isNewResume,
-                    boolean makeResumeActive) throws ProfileCompletionRequiredException, JobDoesNotExistException
+                    Resume resume) throws ProfileCompletionRequiredException, JobDoesNotExistException
   {
     if (job.doesntExist())
     {
@@ -40,7 +38,6 @@ public class ApplyToJobWorkflow
     }
 
     JobseekerProfile profile = jobseekerProfileManager.getJobSeekerProfile(jobseeker);
-    Resume resume = getJobseekerResume(jobseeker, fileName, isNewResume, makeResumeActive);
 
     UnprocessedApplication application = new UnprocessedApplication(jobseeker, job, resume);
     JobApplicationResult applicationResult = jobApplicationSystem.apply(application);
@@ -56,7 +53,7 @@ public class ApplyToJobWorkflow
     }
   }
 
-  private Resume getJobseekerResume(Jobseeker jobseeker,
+  public Resume getJobseekerResume(Jobseeker jobseeker,
                                     String fileName,
                                     boolean isNewResume,
                                     boolean makeResumeActive)

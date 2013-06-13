@@ -12,6 +12,7 @@ import com.theladders.solid.srp.job.JobSearchService;
 import com.theladders.solid.srp.job.application.JobApplicationSystem;
 import com.theladders.solid.srp.jobseeker.JobseekerProfileManager;
 import com.theladders.solid.srp.jobseeker.Jobseeker;
+import com.theladders.solid.srp.resume.Resume;
 import com.theladders.solid.srp.resume.ResumeManager;
 
 public class ApplyController
@@ -58,7 +59,9 @@ public class ApplyController
       ApplyToJobWorkflow workflow = new ApplyToJobWorkflow(jobApplicationSystem, 
                                                            resumeManager, 
                                                            jobseekerProfileManager);
-      workflow.apply(jobseeker, job, origFileName, isNewResume, makeResumeActive);
+      
+      Resume resume = workflow.getJobseekerResume(jobseeker, origFileName, isNewResume, makeResumeActive);
+      workflow.apply(jobseeker, job, resume);
     }
     catch (ProfileCompletionRequiredException e)
     {
