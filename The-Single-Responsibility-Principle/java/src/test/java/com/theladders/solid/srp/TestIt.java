@@ -25,6 +25,7 @@ import com.theladders.solid.srp.resume.ActiveResumeRepository;
 import com.theladders.solid.srp.resume.Resume;
 import com.theladders.solid.srp.resume.ResumeManager;
 import com.theladders.solid.srp.resume.ResumeRepository;
+import com.theladders.solid.srp.resume.ResumeSearchService;
 
 public class TestIt
 {
@@ -291,10 +292,11 @@ public class TestIt
     JobSearchService jobSearchService = new JobSearchService(jobRepository);
     JobApplicationSystem jobApplicationSystem = new JobApplicationSystem(jobApplicationRepository);
     ResumeManager resumeManager = new ResumeManager(resumeRepository, activeResumeRepository);
+    ResumeSearchService resumeSearchService = new ResumeSearchService(resumeManager);
 
     controller = new ApplyController(jobSearchService,
                                      jobApplicationSystem,
-                                     resumeManager,
+                                     resumeSearchService,
                                      jobseekerProfileManager
                                      );
   }

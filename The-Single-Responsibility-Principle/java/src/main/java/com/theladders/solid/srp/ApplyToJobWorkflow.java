@@ -10,21 +10,17 @@ import com.theladders.solid.srp.jobseeker.JobseekerProfile;
 import com.theladders.solid.srp.jobseeker.JobseekerProfileManager;
 import com.theladders.solid.srp.jobseeker.ProfileStatus;
 import com.theladders.solid.srp.resume.Resume;
-import com.theladders.solid.srp.resume.ResumeManager;
 
 public class ApplyToJobWorkflow
 {
   private final JobApplicationSystem    jobApplicationSystem;
-  private final ResumeManager           resumeManager;
   private final JobseekerProfileManager jobseekerProfileManager;
 
   
   public ApplyToJobWorkflow(JobApplicationSystem jobApplicationSystem,
-                            ResumeManager resumeManager,
                             JobseekerProfileManager jobseekerProfileManager)
   {
     this.jobApplicationSystem = jobApplicationSystem;
-    this.resumeManager = resumeManager;
     this.jobseekerProfileManager = jobseekerProfileManager;
   }
 
@@ -51,30 +47,6 @@ public class ApplyToJobWorkflow
     {
       throw new ProfileCompletionRequiredException();
     }
-  }
-
-  public Resume getJobseekerResume(Jobseeker jobseeker,
-                                    String fileName,
-                                    boolean isNewResume,
-                                    boolean makeResumeActive)
-  {
-    Resume resume;
-    
-    if (isNewResume)
-    {
-      resume = resumeManager.saveResume(jobseeker, fileName);
-
-      if (resume != null && makeResumeActive)
-      {
-        resumeManager.saveAsActive(jobseeker, resume);
-      }
-    }
-    else
-    {
-      resume = resumeManager.getActiveResume(jobseeker.getId());
-    }
-    
-    return resume;
   }
 
  private boolean profileCompletionRequired(Jobseeker jobseeker,

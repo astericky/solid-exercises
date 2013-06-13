@@ -13,24 +13,24 @@ import com.theladders.solid.srp.job.application.JobApplicationSystem;
 import com.theladders.solid.srp.jobseeker.JobseekerProfileManager;
 import com.theladders.solid.srp.jobseeker.Jobseeker;
 import com.theladders.solid.srp.resume.Resume;
-import com.theladders.solid.srp.resume.ResumeManager;
+import com.theladders.solid.srp.resume.ResumeSearchService;
 
 public class ApplyController
 {
   private final JobSearchService        jobSearchService;
   private final JobApplicationSystem    jobApplicationSystem;
-  private final ResumeManager           resumeManager;
+  private final ResumeSearchService     resumeSearchService;
   private final JobseekerProfileManager jobseekerProfileManager;
 
 
   public ApplyController(JobSearchService jobSearchService,
                          JobApplicationSystem jobApplicationSystem,
-                         ResumeManager resumeManager,
+                         ResumeSearchService resumeSearchService,
                          JobseekerProfileManager jobseekerProfileManager)
   {
     this.jobSearchService = jobSearchService;
     this.jobApplicationSystem = jobApplicationSystem;
-    this.resumeManager = resumeManager;
+    this.resumeSearchService = resumeSearchService;
     this.jobseekerProfileManager = jobseekerProfileManager;
   }
 
@@ -57,10 +57,9 @@ public class ApplyController
       boolean makeResumeActive = "yes".equals(request.getParameter("makeResumeActive"));
       
       ApplyToJobWorkflow workflow = new ApplyToJobWorkflow(jobApplicationSystem, 
-                                                           resumeManager, 
                                                            jobseekerProfileManager);
       
-      Resume resume = workflow.getJobseekerResume(jobseeker, origFileName, isNewResume, makeResumeActive);
+      Resume resume = resumeSearchService.getResume(jobseeker, origFileName, isNewResume, makeResumeActive);
       workflow.apply(jobseeker, job, resume);
     }
     catch (ProfileCompletionRequiredException e)
