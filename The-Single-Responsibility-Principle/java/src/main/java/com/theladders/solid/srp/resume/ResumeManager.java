@@ -17,7 +17,6 @@ public class ResumeManager
   public Resume saveResume(Jobseeker jobseeker,
                            String fileName)
   {
-
     Resume resume = new Resume(fileName);
     resumeRepository.saveResume(jobseeker.getId(), resume);
 
