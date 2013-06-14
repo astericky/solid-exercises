@@ -25,6 +25,6 @@ public class JobApplicationSystem
       return success;
     }
 
-    return new FailedApplication();
+    return new FailedApplication("We're busy.");
   }
 }

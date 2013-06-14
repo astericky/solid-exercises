@@ -8,7 +8,6 @@ public class SuccessfulApplication implements JobApplicationResult
 {
   private final Jobseeker jobseeker;
   private final Job job;
-  @SuppressWarnings("unused")
   private final Resume resume;
 
   public SuccessfulApplication(Jobseeker jobseeker,
