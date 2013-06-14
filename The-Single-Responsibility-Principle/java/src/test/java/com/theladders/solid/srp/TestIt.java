@@ -26,6 +26,7 @@ import com.theladders.solid.srp.resume.Resume;
 import com.theladders.solid.srp.resume.ResumeManager;
 import com.theladders.solid.srp.resume.ResumeRepository;
 import com.theladders.solid.srp.resume.ResumeSearchService;
+import com.theladders.solid.srp.resume.SomeResume;
 
 public class TestIt
 {
@@ -186,7 +187,7 @@ public class TestIt
 
     controller.handle(request, response, SHARED_RESUME_NAME);
 
-    assertTrue(resumeRepository.contains(new Resume(SHARED_RESUME_NAME)));
+    assertTrue(resumeRepository.contains(new SomeResume(SHARED_RESUME_NAME)));
   }
 
   @Test
@@ -205,7 +206,7 @@ public class TestIt
 
     controller.handle(request, response, "Save Me Seymour");
 
-    assertEquals(new Resume("Save Me Seymour"), activeResumeRepository.activeResumeFor(APPROVED_JOBSEEKER));
+    assertEquals(new SomeResume("Save Me Seymour"), activeResumeRepository.activeResumeFor(APPROVED_JOBSEEKER));
   }
 
   @Before
@@ -265,7 +266,7 @@ public class TestIt
   {
     activeResumeRepository = new ActiveResumeRepository();
 
-    activeResumeRepository.makeActive(JOBSEEKER_WITH_RESUME, new Resume("Blammo"));
+    activeResumeRepository.makeActive(JOBSEEKER_WITH_RESUME, new SomeResume("Blammo"));
   }
 
   private void setupJobApplicationRepository()
@@ -279,7 +280,7 @@ public class TestIt
   {
     Jobseeker JOBSEEKER = new Jobseeker(APPROVED_JOBSEEKER, true);
     SomeJob job = new SomeJob(15);
-    Resume resume = new Resume("foo");
+    Resume resume = new SomeResume("foo");
 
     existingApplication = new SuccessfulApplication(JOBSEEKER, job, resume);
 

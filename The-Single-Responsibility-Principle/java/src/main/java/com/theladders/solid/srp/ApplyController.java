@@ -9,7 +9,6 @@ import com.theladders.solid.srp.http.HttpRequest;
 import com.theladders.solid.srp.http.HttpResponse;
 import com.theladders.solid.srp.job.Job;
 import com.theladders.solid.srp.job.JobSearchService;
-import com.theladders.solid.srp.job.application.ApplicationFailureException;
 import com.theladders.solid.srp.job.application.FailedApplication;
 import com.theladders.solid.srp.job.application.JobApplicationResult;
 import com.theladders.solid.srp.job.application.JobApplicationSystem;
@@ -57,46 +56,46 @@ public class ApplyController
     
     List<String> errList = new ArrayList<>();
     
-    try
+    boolean isNewResume = !"existing".equals(request.getParameter("whichResume"));
+    boolean makeResumeActive = "yes".equals(request.getParameter("makeResumeActive"));
+      
+    ApplyToJobWorkflow workflow = new ApplyToJobWorkflow(jobApplicationSystem);
+      
+    Resume resume = resumeSearchService.getResume(jobseeker, origFileName, isNewResume, makeResumeActive);
+    JobApplicationResult result = workflow.apply(jobseeker, job, resume);
+      
+    if (result.failure()) 
     {
-      boolean isNewResume = !"existing".equals(request.getParameter("whichResume"));
-      boolean makeResumeActive = "yes".equals(request.getParameter("makeResumeActive"));
-      
-      ApplyToJobWorkflow workflow = new ApplyToJobWorkflow(jobApplicationSystem);
-      
-      Resume resume = resumeSearchService.getResume(jobseeker, origFileName, isNewResume, makeResumeActive);
-      JobApplicationResult result = workflow.apply(jobseeker, job, resume);
-      
-      if (result.failure()) 
+      FailedApplication failed = (FailedApplication) result;
+        
+      if (failed.reason().equals("Job does not exist."))
       {
-        FailedApplication failed = (FailedApplication) result;
+        provideInvalidJobView(response, jobId);
+        return response;
+      }
         
-        if (failed.reason().equals("Job does not exist."))
-        {
-          provideInvalidJobView(response, jobId);
-          return response;
-        }
-        
-        if (failed.reason().equals("We're busy.")) {
-          throw new ApplicationFailureException(failed.reason());
-        }
+      if (failed.reason().equals("We're busy.")) 
+      {
+        errList.add("We could not process your application.");
+        provideErrorView(response, errList, model);
+        return response;
       }
       
-      if (profileCompletionRequired(jobseeker, profile))
+      if (failed.reason().equals("Resume does not exist."))
       {
-        provideResumeCompletionView(response, model);
+        provideResumeErrorView(response, model);
         return response;
       }
     }
-    catch (Exception e)
+      
+    if (profileCompletionRequired(jobseeker, profile))
     {
-      errList.add("We could not process your application.");
-      provideErrorView(response, errList, model);
+      provideResumeCompletionView(response, model);
       return response;
     }
     
     provideApplySuccessView(response, model);
-
+    
     return response;
   }
 
@@ -131,6 +130,12 @@ public class ApplyController
   {
    Result result = new Result("error", model, errList);
    response.setResult(result);
+  }
+  
+  private static void provideResumeErrorView(HttpResponse response, Map<String, Object> model)
+  {
+    Result result = new Result("error", model);
+    response.setResult(result);
   }
 
   private static void provideInvalidJobView(HttpResponse response, int jobId)

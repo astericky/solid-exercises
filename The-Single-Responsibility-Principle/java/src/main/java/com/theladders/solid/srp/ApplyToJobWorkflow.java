@@ -23,11 +23,15 @@ public class ApplyToJobWorkflow
 
   public JobApplicationResult apply(Jobseeker jobseeker,
                     Job job,
-                    Resume resume) throws ProfileCompletionRequiredException, JobDoesNotExistException
+                    Resume resume)
   {    
     if (job.doesntExist())
     {
       return new FailedApplication("Job does not exist.");
+    }
+    
+    if (resume.doesntExist()) {
+      return new FailedApplication("Resume does not exist.");
     }
 
     UnprocessedApplication application = new UnprocessedApplication(jobseeker, job, resume);
