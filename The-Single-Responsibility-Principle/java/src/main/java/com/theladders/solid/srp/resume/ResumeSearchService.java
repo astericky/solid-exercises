@@ -18,9 +18,11 @@ public class ResumeSearchService
   {
     Resume resume;
     
-    if (fileName == null) {
+    if (fileName == null || fileName == "") 
+    {
        resume = new NoResume();
-    } else if (isNewResume)
+    } 
+    else if (isNewResume)
     {
       resume = resumeManager.saveResume(jobseeker, fileName);
 

@@ -15,6 +15,12 @@ public class ConfidentialResumeHandler
     this.jobSeekerProfileManager = jobseekerProfileManager;
     this.jobseekerConfidentialityProfileDao = jobseekerConfidentialityProfileDao;
   }
+  
+  /**
+   * 
+   * Both violate the open closed principle because you have to modify these methods
+   * every time there is a new confidentialPhraseCategory that needs to be added.
+   */
 
   public void makeAllCategoriesNonConfidential(User user)
   {
