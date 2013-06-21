@@ -1,43 +1,27 @@
 package com.theladders.solid.ocp.jobseeker;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import com.theladders.solid.ocp.resume.ResumeField;
 
-import com.theladders.solid.ocp.resume.Phrase;
-import com.theladders.solid.ocp.resume.ConfidentialPhraseCategory;
 
 public class JobseekerConfidentialityProfile
 {
-  private Map<String, List<Phrase>> confidentialityProfile;
-
-  public JobseekerConfidentialityProfile()
+  private List<ResumeField> confidentialityProfile = new ArrayList<>();
+  
+  public void addResumeField(ResumeField resumeField)
   {
-    confidentialityProfile = new HashMap<>();
+    confidentialityProfile.add(resumeField);
+  }
+  
+  public void removeResumeField(ResumeField resumeField)
+  {
+    confidentialityProfile.remove(resumeField);
   }
 
-  public boolean resetConfidentialFlagsForCategory(ConfidentialPhraseCategory category)
+  @SuppressWarnings("unused")
+  public List<ResumeField> getConfidentialityProfile()
   {
-    boolean isChanged = false;
-
-    List<Phrase> phrases = this.getConfidentialPhrases(category);
-    if (phrases != null)
-    {
-      for (Phrase phrase : phrases)
-      {
-        if (phrase.isConfidential())
-        {
-          phrase.setConfidential(false);
-          isChanged = true;
-        }
-      }
-    }
-
-    return isChanged;
-  }
-
-  private List<Phrase> getConfidentialPhrases(ConfidentialPhraseCategory category)
-  {
-    return confidentialityProfile.get(category.name());
+    return confidentialityProfile;
   }
 }
