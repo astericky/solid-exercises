@@ -32,16 +32,12 @@ public class ResumeConfidentialityTest
     ConfidentialResumeHandler confidentialResumeHandler = new ConfidentialResumeHandler(jobseekerProfileManager, jobseekerConfidentialityProfileDao, resumeFields);
     ResumeConfidentialityManager resumeConfidentialityManager = new ResumeConfidentialityManager(confidentialResumeHandler);
 
-    int id = 1; // get from command line?
+    int id = 1;
     User user = new User(id);
     
-    // chris please do this for me
-    List<ResumeField> profile = resumeConfidentialityManager.makeAllCategoriesNonConfidential(user);
-    // hey chris, how many fields are confidential?
-    resumeConfidentialityManager.howManyConfidentialFields(user);
-    
-    // zero? excellent, that is what i expected
-    assertEquals(0, profile.size());
+    resumeConfidentialityManager.makeAllCategoriesNonConfidential(user);
+    int numberOfConfidentialFields = resumeConfidentialityManager.numberOfConfidentialFields(user);
+    assertEquals(0, numberOfConfidentialFields);
   }
   
   @Test
@@ -66,10 +62,11 @@ public class ResumeConfidentialityTest
     ConfidentialResumeHandler confidentialResumeHandler = new ConfidentialResumeHandler(jobseekerProfileManager, jobseekerConfidentialityProfileDao, resumeFields);
     ResumeConfidentialityManager resumeConfidentialityManager = new ResumeConfidentialityManager(confidentialResumeHandler);
     
-    int id = 1; // get from command line?
+    int id = 1;
     User user = new User(id);
     
-    resumeConfidentialityManager.makeAllContactInfoNonConfidential(user, "contact");
-    assertEquals(true, true);
+    resumeConfidentialityManager.makeAllContactInfoNonConfidential(user);
+    int numberOfConfidentialContactFields = resumeConfidentialityManager.numberOfConfidentialContactFields(user);
+    assertEquals(0, numberOfConfidentialContactFields);
   }
 }

@@ -1,5 +1,6 @@
 package com.theladders.solid.ocp.resume;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.theladders.solid.ocp.jobseeker.JobseekerConfidentialityProfile;
@@ -29,26 +30,57 @@ public class ConfidentialResumeHandler
   
   public void makeAllCategoriesNonConfidential(User user)
   {
-    JobseekerProfile jsp = jobSeekerProfileManager.getJobSeekerProfile(user);
-    JobseekerConfidentialityProfile profile = jobseekerConfidentialityProfileDao.fetchJobSeekerConfidentialityProfile(jsp.getId());
+    JobseekerConfidentialityProfile profile = confidentialProfileFor(user);
     
-    for(ResumeField resumeField : resumeFields) {
+    for(ResumeField resumeField : resumeFields) 
+    {
       profile.removeResumeField(resumeField);
     }
   }
-  
-  public void makeAllContactNonConfidential(User user, String category)
+
+  public void makeAllContactNonConfidential(User user)
   {
-    JobseekerProfile jsp = jobSeekerProfileManager.getJobSeekerProfile(user);
-    JobseekerConfidentialityProfile profile = jobseekerConfidentialityProfileDao.fetchJobSeekerConfidentialityProfile(jsp.getId());
+    JobseekerConfidentialityProfile profile = confidentialProfileFor(user);
     
-    for(ResumeField resumeField : resumeFields) {
-      if (category == resumeField.getCategory()) {
+    for(ResumeField resumeField : resumeFields) 
+    {
+      if (resumeField.getCategory() == "contact") 
+      {
         profile.removeResumeField(resumeField);
       }
     }
   }
+  
+  public Integer numberOfConfidentialFields(User user)
+  {
+    JobseekerConfidentialityProfile profile = confidentialProfileFor(user);
+    return profile.getConfidentialityProfile().size();
+  }
+  
+  public Integer numberOfContactConfidentialFields(User user)
+  {
+    JobseekerConfidentialityProfile profile = confidentialProfileFor(user);
+    List<ResumeField> contactResumeFields = profile.getConfidentialityProfile();
+    List<ResumeField> confidentialContactResumeFields = new ArrayList<>();
+    
+    for(ResumeField resumeField : contactResumeFields) 
+    {
+      if (resumeField.getCategory() == "contact") 
+      {
+        confidentialContactResumeFields.add(resumeField);
+      }
+    }
+    
+    return confidentialContactResumeFields.size();
+  }
 
+  private JobseekerConfidentialityProfile confidentialProfileFor(User user)
+  {
+    JobseekerProfile jsp = jobSeekerProfileManager.getJobSeekerProfile(user);
+    JobseekerConfidentialityProfile profile = jobseekerConfidentialityProfileDao.fetchJobSeekerConfidentialityProfile(jsp.getId());
+    return profile;
+  }
+  
   @SuppressWarnings("unused")
   private void generatePermanentConfidentialFiles(User user,
                                                   JobseekerConfidentialityProfile profile)
