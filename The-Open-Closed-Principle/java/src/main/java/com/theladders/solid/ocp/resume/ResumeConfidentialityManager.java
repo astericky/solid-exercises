@@ -22,12 +22,12 @@ public class ResumeConfidentialityManager
     confidentialResumeHandler.makeAllCategoriesNonConfidential(user);
   }
   
-  public Integer numberOfConfidentialFields(User user)
+  public int numberOfConfidentialFields(User user)
   {
     return confidentialResumeHandler.numberOfConfidentialFields(user);
   }
   
-  public Integer numberOfConfidentialContactFields(User user)
+  public int numberOfConfidentialContactFields(User user)
   {
     return confidentialResumeHandler.numberOfContactConfidentialFields(user);
   }

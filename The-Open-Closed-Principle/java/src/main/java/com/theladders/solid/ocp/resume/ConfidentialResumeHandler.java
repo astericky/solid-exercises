@@ -51,13 +51,13 @@ public class ConfidentialResumeHandler
     }
   }
   
-  public Integer numberOfConfidentialFields(User user)
+  public int numberOfConfidentialFields(User user)
   {
     JobseekerConfidentialityProfile profile = confidentialProfileFor(user);
     return profile.getConfidentialityProfile().size();
   }
   
-  public Integer numberOfContactConfidentialFields(User user)
+  public int numberOfContactConfidentialFields(User user)
   {
     JobseekerConfidentialityProfile profile = confidentialProfileFor(user);
     List<ResumeField> contactResumeFields = profile.getConfidentialityProfile();
