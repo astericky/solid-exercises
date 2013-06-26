@@ -30,4 +30,5 @@ public class Environment extends HashMap<Object, Object>
     Object val = get(key);
     return (val != null) ? val.toString().trim() : "";
   }
+  
 }
