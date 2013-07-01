@@ -1,33 +1,30 @@
 package com.theladders.solid.isp.oldjob;
 
-import java.io.Serializable;
 import java.util.Collection;
-import java.util.Date;
+import java.util.List;
 
 import com.theladders.solid.isp.oldjob.stubs.City;
+import com.theladders.solid.isp.oldjob.stubs.Discipline;
+import com.theladders.solid.isp.oldjob.stubs.Experience;
+import com.theladders.solid.isp.oldjob.stubs.Industry;
 import com.theladders.solid.isp.oldjob.stubs.JobFunction;
-import com.theladders.solid.isp.oldjob.stubs.JobStatus;
+import com.theladders.solid.isp.oldjob.stubs.Region;
+import com.theladders.solid.isp.oldjob.JobStatus;
 import com.theladders.solid.isp.oldjob.stubs.PositionLevel;
 import com.theladders.solid.isp.oldjob.stubs.Sector;
 
 /**
  * Job Interface.
  */
-public interface Job extends JobCommon, Serializable
+public interface Job extends CompanyInformation, 
+                             Compensation,
+                             Date,
+                             InternalInformation,
+                             JobDescription,
+                             JobStatus,
+                             Location,
+                             Recruiter
 {
-  /**
-   * Get the City for this job.
-   *
-   * @return the City for this job.
-   */
-  City getCity();
-
-  /**
-   * Get the (internally set) editor's note.
-   *
-   * @return editor's note.
-   */
-  String getEditorNote();
 
   /**
    * Returns a unique identifier for this job. In the web application, this currently maps to
@@ -38,42 +35,47 @@ public interface Job extends JobCommon, Serializable
   int getJobId();
 
   /**
-   * Return the jobsite id for this job.
-   *
-   * @return jobsite id for this job.
-   */
-  int getJobSiteId();
-
-  /**
-   * Get the date this job was originally published
-   *
-   * @return the Date the job was originally published
-   */
-  Date getOriginalPublicationDate();
-
-  /**
    * Returns the real job_id.
    *
    * @return job id
    */
   Integer getParentJobId();
-
-  PositionLevel getPositionLevel();
-
-  /**
-   * Get the sector for this job.
-   *
-   * @return the sector for this job.
-   */
+  int getJobSiteId();
+  
+  String getCompany();
+  Integer getCompanySize();
   Sector getSector();
+  
+  String getCompensation();
+  String getCompensationSalary();
+  String getCompensationBonus();
+  String getCompensationOther();
+
+  Date getOriginalPublicationDate();
+  Date getPublicationDate();
+  Date getEntryDate();
+  Date getUpdateTime();  
+  
+  City getCity();
+  Region getRegion();
+  String getLocation();
+
+  String getTitle();
+  PositionLevel getPositionLevel();
+  String getDescription();
+  String getShortDescription();
+  List<Discipline> getDisciplines();
+  Experience getExperience();
+  String reportsTo();
+  Industry getIndustry();
 
   /**
-   * Get this job's short description.
+   * Get the (internally set) editor's note.
    *
-   * @return a summary description of this job.
+   * @return editor's note.
    */
-  String getShortDescription();
-
+  String getEditorNote();  
+  
   /**
    * Get the URL for this job. This is only valid for external (harvested) jobs (! isJobReq).
    *
