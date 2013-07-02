@@ -19,12 +19,14 @@ public abstract class Job implements TheLaddersJob
   private String url = "";
   
   public Job(CompanyInformation companyInformation, 
-             JobDescription description, 
+             JobDescription description,
+             List<JobLocation> locations,
              JobCompensation compensation, 
              Recruiter recruiter)
   {
     this.setCompanyInformation(companyInformation);
     this.setDescription(description);
+    this.setLocations(locations);
     this.setCompensation(compensation);
     this.setRecruiter(recruiter);
   }
