@@ -1,42 +1,27 @@
 package com.theladders.solid.isp.oldjob;
 
-import java.util.ArrayList;
-import java.util.List;
-
-/**
- * Job Interface.
- */
-public abstract class Job implements TheLaddersJob
-{
+public class JobOpening {
   private CompanyInformation companyInformation;
   private JobDescription description;
   private JobCompensation compensation;
-  private List<JobLocation> locations = new ArrayList<JobLocation>();
+  private JobLocation location;
   private Recruiter recruiter;
   private Date date;
   private JobStatus status;
-  private String editorNote = "";
-  private String url = "";
   
-  public Job(CompanyInformation companyInformation, 
-             JobDescription description, 
-             JobCompensation compensation, 
-             Recruiter recruiter)
+  public JobOpening(CompanyInformation companyInformation, 
+                    JobDescription description, 
+                    JobCompensation compensation, 
+                    Recruiter recruiter,
+                    JobLocation location,
+                    Date date)
   {
     this.setCompanyInformation(companyInformation);
     this.setDescription(description);
     this.setCompensation(compensation);
     this.setRecruiter(recruiter);
-  }
-  
-  public String getEditorNote() {
-    return this.editorNote;
-  }
-  public String getUrl() {
-    return this.url;
-  }
-  public boolean isMarketing() {
-    return true;
+    this.setLocation(location);
+    this.setDate(date);
   }
 
   public CompanyInformation getCompanyInformation()
@@ -69,14 +54,14 @@ public abstract class Job implements TheLaddersJob
     this.compensation = compensation;
   }
 
-  public List<JobLocation> getLocations()
+  public JobLocation getLocation()
   {
-    return locations;
+    return location;
   }
 
-  public void setLocations(List<JobLocation> locations)
+  public void setLocation(JobLocation location)
   {
-    this.locations = locations;
+    this.location = location;
   }
 
   public Recruiter getRecruiter()

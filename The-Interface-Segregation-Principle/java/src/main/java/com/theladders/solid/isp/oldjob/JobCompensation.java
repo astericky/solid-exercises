@@ -1,6 +1,6 @@
 package com.theladders.solid.isp.oldjob;
 
-public interface Compensation
+public interface JobCompensation
 {
   String getCompensation();
   String getCompensationSalary();
