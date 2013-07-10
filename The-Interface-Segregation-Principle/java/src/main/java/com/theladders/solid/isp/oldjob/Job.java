@@ -22,13 +22,15 @@ public abstract class Job implements TheLaddersJob
              JobDescription description,
              List<JobLocation> locations,
              JobCompensation compensation, 
-             Recruiter recruiter)
+             Recruiter recruiter,
+             Date date)
   {
-    this.setCompanyInformation(companyInformation);
-    this.setDescription(description);
-    this.setLocations(locations);
-    this.setCompensation(compensation);
-    this.setRecruiter(recruiter);
+    this.companyInformation = companyInformation;
+    this.description = description;
+    this.locations = locations;
+    this.compensation = compensation;
+    this.recruiter = recruiter;
+    this.date = date;
   }
   
   public String getEditorNote() {
@@ -46,19 +48,9 @@ public abstract class Job implements TheLaddersJob
     return companyInformation;
   }
 
-  public void setCompanyInformation(CompanyInformation companyInformation)
-  {
-    this.companyInformation = companyInformation;
-  }
-
   public JobDescription getDescription()
   {
     return description;
-  }
-
-  public void setDescription(JobDescription description)
-  {
-    this.description = description;
   }
 
   public JobCompensation getCompensation()
@@ -66,19 +58,9 @@ public abstract class Job implements TheLaddersJob
     return compensation;
   }
 
-  public void setCompensation(JobCompensation compensation)
-  {
-    this.compensation = compensation;
-  }
-
   public List<JobLocation> getLocations()
   {
     return locations;
-  }
-
-  public void setLocations(List<JobLocation> locations)
-  {
-    this.locations = locations;
   }
 
   public Recruiter getRecruiter()
@@ -86,28 +68,13 @@ public abstract class Job implements TheLaddersJob
     return recruiter;
   }
 
-  public void setRecruiter(Recruiter recruiter)
-  {
-    this.recruiter = recruiter;
-  }
-
   public Date getDate()
   {
     return date;
   }
 
-  public void setDate(Date date)
-  {
-    this.date = date;
-  }
-
   public JobStatus getStatus()
   {
     return status;
-  }
-
-  public void setStatus(JobStatus status)
-  {
-    this.status = status;
   }
 }
