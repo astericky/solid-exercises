@@ -5,7 +5,26 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+/*
+ * This system depends on suggestedArticleDAO
+ * and a repositoryManger.
+ * 
+ * Run Time Dependencies:
+ * suggestedArticle
+ * SuggestedArticleDAO
+ * repositoryManager
+ * contentNode
+ * 
+ * Compile Time Dependencies:
+ * suggestedArticle
+ * SuggestedArticleExample
+ * Date
+ * List
+ * HashMap
+ * Map
+ * String
+ * Integer
+ */
 public class SubscriberArticleManagerImpl implements SubscriberArticleManager
 {
   private static final String              IMAGE_PREFIX       = "http://somecdnprodiver.com/static/images/careerAdvice/";
@@ -33,21 +52,14 @@ public class SubscriberArticleManagerImpl implements SubscriberArticleManager
     this.repositoryManager = repositoryManager;
   }
 
-  public List<SuggestedArticle> getArticlesbySubscriber(Integer subscriberId)
+  public List<SuggestedArticle> getSuggestedArticlesbySubscriber(Integer subscriberId)
   {
-    SuggestedArticleExample criteria = new SuggestedArticleExample();
-    criteria.createCriteria()
-            .andSubscriberIdEqualTo(subscriberId)
-            .andSuggestedArticleStatusIdIn(Arrays.asList(1, 2))  // must be New or Viewed
-            .andSuggestedArticleSourceIdEqualTo(1);
-
-    criteria.setOrderByClause("create_time desc");
-    List<SuggestedArticle> dbSuggestions = this.suggestedArticleDao.selectByExampleWithBlobs(criteria);
+    List<SuggestedArticle> suggestions = this.suggestedArticleDao.getSuggestedArticles(subscriberId);
 
     // Fetch content associated with SuggestedArticle (based on externalArticleId)
-    resolveArticles(dbSuggestions);
+    resolveArticles(suggestions);
 
-    return dbSuggestions;
+    return suggestions;
   }
 
   public int addSuggestedArticle(SuggestedArticle suggestedArticle)
@@ -58,13 +70,13 @@ public class SubscriberArticleManagerImpl implements SubscriberArticleManager
     suggestedArticle.setSuggestedArticleSourceId(HTP_CONSULTANT);
     suggestedArticle.setCreateTime(new Date()); // current date
     suggestedArticle.setUpdateTime(new Date()); // current date
-    int newId = suggestedArticleDao.insertReturnId(suggestedArticle);
+    int newId = suggestedArticleDao.addSuggestedArticle(suggestedArticle);
     return newId;
   }
 
-  private void resolveArticles(List<SuggestedArticle> dbArticles)
+  private void resolveArticles(List<SuggestedArticle> suggestedArticles)
   {
-    for (SuggestedArticle article : dbArticles)
+    for (SuggestedArticle article : suggestedArticles)
     {
 
       // Attempt to fetch the actual content;
@@ -94,7 +106,7 @@ public class SubscriberArticleManagerImpl implements SubscriberArticleManager
     SuggestedArticle article = new SuggestedArticle();
     article.setSuggestedArticleId(id);
     article.setNote(note);
-    suggestedArticleDao.updateByPrimaryKeySelective(article);
+    suggestedArticleDao.updateSuggestedArticleById(article);
   }
 
   public void markRecomDeleted(Integer id)
@@ -103,6 +115,6 @@ public class SubscriberArticleManagerImpl implements SubscriberArticleManager
     SuggestedArticle article = new SuggestedArticle();
     article.setSuggestedArticleId(id);
     article.setSuggestedArticleStatusId(STATUS_DELETED);
-    suggestedArticleDao.updateByPrimaryKeySelective(article);
+    suggestedArticleDao.updateSuggestedArticleById(article);
   }
 }
